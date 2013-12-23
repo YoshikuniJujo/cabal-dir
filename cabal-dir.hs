@@ -69,6 +69,7 @@ printRPInstallDirs :: FilePath -> InstallDirs -> IO ()
 printRPInstallDirs p = putStr . showRPInstallDirs p
 
 removePrefix :: FilePath -> FilePath -> String
+removePrefix "" s = s
 removePrefix p s
 	| p `isPrefixOf` s = dropWhile (== '/') $ drop (length p) s
 	| otherwise = s
