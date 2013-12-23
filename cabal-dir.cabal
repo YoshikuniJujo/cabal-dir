@@ -29,6 +29,15 @@ category:            Distribution
 build-type:          Simple
 cabal-version:       >=1.8
 
+source-repository	head
+  type:		git
+  location:	git://github.com/YoshikuniJujo/cabal-dir.git
+
+source-repository	this
+  type:		git
+  location:	git://github.com/YoshikuniJujo/cabal-dir.git
+  tag:		0.1.0.0
+
 executable cabal-dir
   main-is:             cabal-dir.hs
   -- other-modules:       
