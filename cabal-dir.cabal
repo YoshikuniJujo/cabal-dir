@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                cabal-dir
-version:             0.1.0.1
+version:             0.1.0.2
 stability:           Experimental
 synopsis:            show dist dir of 'cabal copy/install'
 description:         
@@ -10,12 +10,7 @@ description:
   .
   > % cabal configure
   > % cabal-dir
-  > bindir : /usr/local/bin
-  > libdir : /usr/local/lib/foo-0.1.2.3/ghc-8.8.8
-  > datadir: /usr/local/share/foo-0.1.2.3
-  > htmldir: /usr/local/share/doc/foo-0.1.2.3/html
-  >
-  > % cabal-dir /usr/local
+  > prefix : /usr/local/
   > bindir : bin
   > libdir : lib/foo-0.1.2.3/ghc-8.8.8
   > datadir: share/foo-0.1.2.3
@@ -36,9 +31,10 @@ source-repository	head
 source-repository	this
   type:		git
   location:	git://github.com/YoshikuniJujo/cabal-dir.git
-  tag:		0.1.0.1
+  tag:		0.1.0.2
 
 executable cabal-dir
   main-is:             cabal-dir.hs
   -- other-modules:       
   build-depends:       base > 3 && < 5, directory, Cabal
+  ghc-options:         -Wall

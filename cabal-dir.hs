@@ -1,3 +1,5 @@
+module Main(main) where
+
 import Distribution.Simple.LocalBuildInfo(
 	LocalBuildInfo, CopyDest(..), absoluteInstallDirs)
 import qualified Distribution.Simple.LocalBuildInfo as LBI
@@ -7,15 +9,11 @@ import Distribution.PackageDescription.Parse
 import Distribution.PackageDescription
 import Distribution.Verbosity
 
-import Distribution.Package
-import Distribution.Version
-
 import System.Directory
 import Data.List
 
-import System.Environment
-
 data InstallDirs = InstallDirs {
+	prefix :: FilePath,
 	bindir :: FilePath,
 	libdir :: FilePath,
 	datadir :: FilePath,
@@ -39,6 +37,7 @@ getInstallDirs = do
 	pd <- getPackageDescription
 	let dirs = absoluteInstallDirs pd lbi NoCopyDest
 	return $ InstallDirs {
+		prefix = LBI.prefix dirs,
 		bindir = LBI.bindir dirs,
 		libdir = LBI.libdir dirs,
 		datadir = LBI.datadir dirs,
@@ -47,23 +46,19 @@ getInstallDirs = do
 
 showInstallDirsGen :: (FilePath -> String) -> InstallDirs -> String
 showInstallDirsGen sw InstallDirs {
+	prefix = px,
 	bindir = bd,
 	libdir = ld,
 	datadir = dd,
 	htmldir = hd } =
+	"prefix : " ++ px ++ "/\n" ++
 	"bindir : " ++ sw bd ++ "\n" ++
 	"libdir : " ++ sw ld ++ "\n" ++
 	"datadir: " ++ sw dd ++ "\n" ++
 	"htmldir: " ++ sw hd ++ "\n"
 
-showInstallDirs :: InstallDirs -> String
-showInstallDirs = showInstallDirsGen id
-
 showRPInstallDirs :: FilePath -> InstallDirs -> String
 showRPInstallDirs = showInstallDirsGen . removePrefix
-
-printInstallDirs :: InstallDirs -> IO ()
-printInstallDirs = putStr . showInstallDirs
 
 printRPInstallDirs :: FilePath -> InstallDirs -> IO ()
 printRPInstallDirs p = putStr . showRPInstallDirs p
@@ -76,9 +71,5 @@ removePrefix p s
 
 main :: IO ()
 main = do
-	args <- getArgs
-	let prfx = case args of
-		[] -> ""
-		[p] -> p
-		_ -> error "bad arguments"
-	getInstallDirs >>= printRPInstallDirs prfx
+	dirs <- getInstallDirs
+	printRPInstallDirs (prefix dirs) dirs
