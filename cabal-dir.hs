@@ -67,7 +67,11 @@ removePrefix :: FilePath -> FilePath -> String
 removePrefix "" s = s
 removePrefix p s
 	| p `isPrefixOf` s = dropWhile (== '/') $ drop (length p) s
-	| otherwise = s
+	| otherwise = addCurrent s
+
+addCurrent :: FilePath -> FilePath
+addCurrent fp@('/' : _) = fp
+addCurrent fp = "./" ++ fp
 
 main :: IO ()
 main = do

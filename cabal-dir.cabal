@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                cabal-dir
-version:             0.1.0.2
+version:             0.1.0.3
 stability:           Experimental
 synopsis:            show dist dir of 'cabal copy/install'
 description:         
@@ -31,7 +31,7 @@ source-repository	head
 source-repository	this
   type:		git
   location:	git://github.com/YoshikuniJujo/cabal-dir.git
-  tag:		0.1.0.2
+  tag:		0.1.0.3
 
 executable cabal-dir
   main-is:             cabal-dir.hs
