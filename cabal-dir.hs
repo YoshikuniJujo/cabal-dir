@@ -12,6 +12,8 @@ import Distribution.Verbosity
 import System.Directory
 import Data.List
 
+import System.FilePath
+
 data InstallDirs = InstallDirs {
 	prefix :: FilePath,
 	bindir :: FilePath,
@@ -20,8 +22,11 @@ data InstallDirs = InstallDirs {
 	htmldir :: FilePath
  } deriving Show
 
+configFile :: FilePath
+configFile = "dist" </> "setup-config"
+
 getLocalBuildInfo :: IO LocalBuildInfo
-getLocalBuildInfo = read . (!! 1) . lines <$> readFile "./dist/setup-config"
+getLocalBuildInfo = read . (!! 1) . lines <$> readFile configFile
 
 getPackageDescription :: IO PackageDescription
 getPackageDescription = packageDescription <$>
@@ -51,7 +56,7 @@ showInstallDirsGen sw InstallDirs {
 	libdir = ld,
 	datadir = dd,
 	htmldir = hd } =
-	"prefix : " ++ px ++ "/\n" ++
+	"prefix : " ++ px ++ [pathSeparator] ++ "\n" ++
 	"bindir : " ++ sw bd ++ "\n" ++
 	"libdir : " ++ sw ld ++ "\n" ++
 	"datadir: " ++ sw dd ++ "\n" ++
@@ -66,12 +71,13 @@ printRPInstallDirs p = putStr . showRPInstallDirs p
 removePrefix :: FilePath -> FilePath -> String
 removePrefix "" s = s
 removePrefix p s
-	| p `isPrefixOf` s = dropWhile (== '/') $ drop (length p) s
+	| p `isPrefixOf` s = dropWhile isPathSeparator $ drop (length p) s
 	| otherwise = addCurrent s
 
 addCurrent :: FilePath -> FilePath
-addCurrent fp@('/' : _) = fp
-addCurrent fp = "./" ++ fp
+addCurrent fp@(h : _)
+	| isPathSeparator h = fp
+addCurrent fp = "." ++ [pathSeparator] ++ fp
 
 main :: IO ()
 main = do
